@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>TowerSoft.HtmlToExcel</RootNamespace>
+    <PackageId>TowerSoft.HtmlToExcel</PackageId>
+    <Authors>TowerSoft</Authors>
+    <Company>TowerSoft</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Uses HtmlAgilityPack and EPPlus to automatically convert an HTML table to an Excel spreadsheet.</Description>
+    <Version>0.6.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="4.5.3.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.4" />
+  </ItemGroup>
+
+</Project>
