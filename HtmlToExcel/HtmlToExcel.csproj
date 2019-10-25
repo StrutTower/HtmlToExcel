@@ -8,7 +8,8 @@
     <Company>TowerSoft</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Uses HtmlAgilityPack and EPPlus to automatically convert an HTML table to an Excel spreadsheet.</Description>
-    <Version>0.6.0</Version>
+    <Version>0.6.1</Version>
+    <AssemblyVersion>0.6.1.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
