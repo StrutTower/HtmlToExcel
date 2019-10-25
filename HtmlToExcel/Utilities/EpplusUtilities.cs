@@ -23,7 +23,7 @@ namespace TowerSoft.HtmlToExcel {
         }
 
         internal void CreateSheet(ExcelPackage package, string sheetName, HtmlNode node) {
-            ExcelWorksheet sheet = package.Workbook.Worksheets.Add("Sheet");
+            ExcelWorksheet sheet = package.Workbook.Worksheets.Add(sheetName);
 
             int row = 1;
             int col = 1;
