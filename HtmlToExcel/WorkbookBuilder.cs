@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+﻿using AngleSharp;
 using OfficeOpenXml;
 using System;
 
@@ -35,11 +35,10 @@ namespace TowerSoft.HtmlToExcel {
         /// <param name="settings">Settings for this sheet only.</param>
         /// <returns></returns>
         public WorkbookBuilder AddSheet(string sheetName, string htmlString, HtmlToExcelSettings settings = null) {
-            HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(htmlString);
-            HtmlNode node = new HtmlAgilityUtilities().GetHtmlTableNode(htmlDoc);
+            IBrowsingContext context = BrowsingContext.New(Configuration.Default);
+            var document = context.OpenAsync(req => req.Content(htmlString)).Result;
 
-            new EPPlusUtilities(settings ?? Settings).CreateSheet(Package, sheetName, node);
+            new EPPlusUtilities(settings ?? Settings).CreateSheet(Package, sheetName, document.DocumentElement);
             return this;
         }
 

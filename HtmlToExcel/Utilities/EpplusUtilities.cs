@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+﻿using AngleSharp.Dom;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -15,23 +15,23 @@ namespace TowerSoft.HtmlToExcel {
             Settings = settings;
         }
 
-        internal byte[] GenerateWorkbookFromHtmlNode(HtmlNode node) {
+        internal byte[] GenerateWorkbookFromHtmlNode(IElement node) {
             using (ExcelPackage package = new ExcelPackage()) {
                 CreateSheet(package, "Sheet", node);
                 return package.GetAsByteArray();
             }
         }
 
-        internal void CreateSheet(ExcelPackage package, string sheetName, HtmlNode node) {
+        internal void CreateSheet(ExcelPackage package, string sheetName, IElement node) {
             ExcelWorksheet sheet = package.Workbook.Worksheets.Add(sheetName);
 
             int row = 1;
             int col = 1;
-            foreach (HtmlNode rowNode in node.Descendants().Where(x => x.Name == "tr")) {
+            foreach (IElement rowNode in node.QuerySelectorAll("tr")) {
 
-                List<HtmlNode> cells = rowNode.Elements("td").ToList();
-                cells.AddRange(rowNode.Elements("th"));
-                foreach (HtmlNode cellNode in cells) {
+                List<IElement> cells = rowNode.QuerySelectorAll("th td").ToList();
+                //cells.AddRange(rowNode.Elements("th"));
+                foreach (IElement cellNode in cells) {
                     RenderCell(sheet, cellNode, ref row, ref col);
                 }
                 col = 1;
@@ -50,23 +50,23 @@ namespace TowerSoft.HtmlToExcel {
             }
         }
 
-        private void RenderCell(ExcelWorksheet sheet, HtmlNode cellNode, ref int row, ref int col) {
+        private void RenderCell(ExcelWorksheet sheet, IElement cellNode, ref int row, ref int col) {
             ExcelRange cell = sheet.Cells[row, col];
-            cell.Value = cellNode.InnerText.SafeTrim();
+            cell.Value = cellNode.ChildNodes.OfType<IText>().Select(m => m.Text).FirstOrDefault();
 
-            if (cellNode.Name == "th") { // Set font bold for th elements
+            if (cellNode.NodeName == "th") { // Set font bold for th elements
                 cell.Style.Font.Bold = true;
             }
 
-            if (cellNode.HasAttributes) {
-                HtmlAttribute boldAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-bold");
+            if (cellNode.Attributes != null && cellNode.Attributes.Any()) {
+                IAttr boldAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-bold");
                 if (boldAttribute != null) {
                     if (bool.TryParse(boldAttribute.Value, out bool isBold)) {
                         cell.Style.Font.Bold = isBold;
                     }
                 }
 
-                HtmlAttribute hyperlinkAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-hyperlink");
+                IAttr hyperlinkAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-hyperlink");
                 if (hyperlinkAttribute != null) {
                     if (Uri.TryCreate(hyperlinkAttribute.Value, UriKind.Absolute, out Uri uri)) {
                         cell.Hyperlink = uri;
@@ -77,10 +77,10 @@ namespace TowerSoft.HtmlToExcel {
                     }
                 }
 
-                HtmlAttribute commentAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-comment");
+                IAttr commentAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-comment");
                 if (commentAttribute != null && !string.IsNullOrWhiteSpace(commentAttribute.Value)) {
                     string author = "System";
-                    HtmlAttribute authorAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-comment-author");
+                    IAttr authorAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-comment-author");
                     if (authorAttribute != null && !string.IsNullOrWhiteSpace(authorAttribute.Value)) {
                         author = authorAttribute.Value;
                     }
@@ -88,13 +88,14 @@ namespace TowerSoft.HtmlToExcel {
                 }
             }
 
-            int colspan = cellNode.GetAttributeValue("colspan", 1);
-            if (colspan > 1) {
-                sheet.Cells[row, col, row, col + colspan - 1].Merge = true;
-                _hasMergedCells = true;
-                col += colspan;
-            } else {
-                col++;
+            if (int.TryParse(cellNode.GetAttribute("colspan"), out int colspan)) {
+                if (colspan > 1) {
+                    sheet.Cells[row, col, row, col + colspan - 1].Merge = true;
+                    _hasMergedCells = true;
+                    col += colspan;
+                } else {
+                    col++;
+                }
             }
         }
     }

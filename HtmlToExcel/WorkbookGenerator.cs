@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using AngleSharp;
+using AngleSharp.Dom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,10 @@ namespace TowerSoft.HtmlToExcel {
         /// <param name="htmlString">HTML string with only one table element. Will throw an error if there are more than one tables or if a table cannot be found.</param>
         /// <returns>Byte array of the Excel file data.</returns>
         public byte[] FromHtmlString(string htmlString) {
-            HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(htmlString);
-            return ProcessHtmlDocument(htmlDoc);
+            IBrowsingContext context = BrowsingContext.New(Configuration.Default);
+            var document = context.OpenAsync(req => req.Content(htmlString)).Result;
+
+            return ProcessDocument(document.DocumentElement);
         }
 
         /// <summary>
@@ -43,13 +45,9 @@ namespace TowerSoft.HtmlToExcel {
         /// <param name="uri">URI to download the HTML string from. Will throw an error if the server cannot be reached, there are more than one tables or if a table cannot be found.</param>
         /// <returns>Byte array of the Excel file data.</returns>
         public byte[] FromUri(Uri uri) {
-            string html;
-            using (WebClient webClient = new WebClient() { UseDefaultCredentials = true }) {
-                html = webClient.DownloadString(uri);
-            }
-            HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.LoadHtml(html);
-            return ProcessHtmlDocument(htmlDoc);
+            IBrowsingContext context = BrowsingContext.New(Configuration.Default);
+            var document = context.OpenAsync(uri.ToString()).Result;
+            return ProcessDocument(document.DocumentElement);
         }
 
         /// <summary>
@@ -57,14 +55,16 @@ namespace TowerSoft.HtmlToExcel {
         /// </summary>
         /// <param name="stream">Stream of the HTML document. Will throw an error if there are more than one tables or if a table cannot be found.</param>
         /// <returns>Byte array of the Excel file data.</returns>
-        public byte[] FromStream(System.IO.Stream stream) {
-            HtmlDocument htmlDoc = new HtmlDocument();
-            htmlDoc.Load(stream);
-            return ProcessHtmlDocument(htmlDoc);
-        }
+        //public byte[] FromStream(System.IO.Stream stream) {
+        //    //HtmlDocument htmlDoc = new HtmlDocument();
+        //    //htmlDoc.Load(stream);
+        //    //return ProcessHtmlDocument(htmlDoc);
+        //    IBrowsingContext context = BrowsingContext.New(Configuration.Default);
+        //    var document = context.OpenAsync(req => req.Content(htmlString)).Result;
+        //}
 
-        private byte[] ProcessHtmlDocument(HtmlDocument htmlDoc) {
-            HtmlNode table = new HtmlAgilityUtilities().GetHtmlTableNode(htmlDoc);
+        private byte[] ProcessDocument(IElement htmlDoc) {
+            IElement table = new HtmlAgilityUtilities().GetHtmlTableElement(htmlDoc);
             return new EPPlusUtilities(HtmlToExcelSettings).GenerateWorkbookFromHtmlNode(table);
         }
     }
