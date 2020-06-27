@@ -1,7 +1,5 @@
 # TowerSoft HtmlToExcel
 
-Currently in Beta. 
-
 Small Nuget package that uses AngleSharp to read a HTML table and generate an Excel file using EPPlus
 
 ### Usage
