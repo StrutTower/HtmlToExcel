@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using TowerSoft.HtmlToExcel.Utilities;
 
 namespace TowerSoft.HtmlToExcel {
     public class WorkbookGenerator {
@@ -64,7 +65,7 @@ namespace TowerSoft.HtmlToExcel {
         //}
 
         private byte[] ProcessDocument(IElement htmlDoc) {
-            IElement table = new HtmlAgilityUtilities().GetHtmlTableElement(htmlDoc);
+            IElement table = new AngleSharpUtilities().GetHtmlTableNode(htmlDoc);
             return new EPPlusUtilities(HtmlToExcelSettings).GenerateWorkbookFromHtmlNode(table);
         }
     }
