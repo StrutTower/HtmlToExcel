@@ -1,31 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>TowerSoft.HtmlToExcel</RootNamespace>
-    <PackageId>TowerSoft.HtmlToExcel</PackageId>
-    <Authors>StrutTower</Authors>
-    <Company>TowerSoft</Company>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>Uses AngleSharp and EPPlus to automatically convert an HTML table to an Excel spreadsheet.</Description>
-    <Version>1.0.1</Version>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <PackageLicenseFile>license.txt</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/StrutTower/HtmlToExcel</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/StrutTower/HtmlToExcel</RepositoryUrl>
-    <Product>TowerSoft HtmlToExcel</Product>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>TowerSoft.HtmlToExcel</RootNamespace>
+		<PackageId>TowerSoft.HtmlToExcel</PackageId>
+		<Authors>StrutTower</Authors>
+		<Company>TowerSoft</Company>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Description>Uses AngleSharp and EPPlus to automatically convert an HTML table to an Excel spreadsheet.</Description>
+		<Version>1.0.1</Version>
+		<AssemblyVersion>1.0.1.0</AssemblyVersion>
+		<PackageLicenseFile>license.txt</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/StrutTower/HtmlToExcel</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/StrutTower/HtmlToExcel</RepositoryUrl>
+		<Product>TowerSoft HtmlToExcel</Product>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.14.0" />
-    <PackageReference Include="EPPlus" Version="4.5.3.1" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="AngleSharp" Version="0.14.0" />
+		<PackageReference Include="EPPlus" Version="4.5.3.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\license.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\license.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>
