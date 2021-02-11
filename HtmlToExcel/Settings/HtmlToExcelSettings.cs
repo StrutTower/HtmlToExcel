@@ -1,4 +1,9 @@
-﻿namespace TowerSoft.HtmlToExcel {
+﻿using OfficeOpenXml;
+
+namespace TowerSoft.HtmlToExcel {
+    /// <summary>
+    /// Settings class
+    /// </summary>
     public class HtmlToExcelSettings {
         /// <summary>
         /// Toggles if all used cells should autofit to the contents of the cell. Default = true
@@ -16,6 +21,11 @@
         public bool ShowFilter { get; set; }
 
         /// <summary>
+        /// Sets the license context for EPPluss. More info here: https://epplussoftware.com/developers/licenseexception
+        /// </summary>
+        public LicenseContext EpplusLicenseContext { get; set; }
+
+        /// <summary>
         /// Get the default settings
         /// </summary>
         public static HtmlToExcelSettings Defaults {
@@ -23,7 +33,8 @@
                 return new HtmlToExcelSettings {
                     AutofitColumns = true,
                     ShowRowStripes = true,
-                    ShowFilter = true
+                    ShowFilter = true,
+                    EpplusLicenseContext = LicenseContext.NonCommercial
                 };
             }
         }

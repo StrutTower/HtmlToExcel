@@ -7,6 +7,9 @@ using System.Net;
 using TowerSoft.HtmlToExcel.Utilities;
 
 namespace TowerSoft.HtmlToExcel {
+    /// <summary>
+    /// Excel generator class for creating a Excel spreadsheet with a single sheet.
+    /// </summary>
     public class WorkbookGenerator {
         /// <summary>
         /// Current HtmlToExcelSettings used by this instance
@@ -52,18 +55,10 @@ namespace TowerSoft.HtmlToExcel {
         }
 
         /// <summary>
-        /// Generates an Excel file from HTML document stream and returns the byte array of the file data.
+        /// 
         /// </summary>
-        /// <param name="stream">Stream of the HTML document. Will throw an error if there are more than one tables or if a table cannot be found.</param>
-        /// <returns>Byte array of the Excel file data.</returns>
-        //public byte[] FromStream(System.IO.Stream stream) {
-        //    //HtmlDocument htmlDoc = new HtmlDocument();
-        //    //htmlDoc.Load(stream);
-        //    //return ProcessHtmlDocument(htmlDoc);
-        //    IBrowsingContext context = BrowsingContext.New(Configuration.Default);
-        //    var document = context.OpenAsync(req => req.Content(htmlString)).Result;
-        //}
-
+        /// <param name="htmlDoc"></param>
+        /// <returns></returns>
         private byte[] ProcessDocument(IElement htmlDoc) {
             IElement table = new AngleSharpUtilities().GetHtmlTableNode(htmlDoc);
             return new EPPlusUtilities(HtmlToExcelSettings).GenerateWorkbookFromHtmlNode(table);

@@ -15,22 +15,23 @@ namespace TowerSoft.HtmlToExcel {
             Settings = settings;
         }
 
-        internal byte[] GenerateWorkbookFromHtmlNode(IElement node) {
+        internal byte[] GenerateWorkbookFromHtmlNode(IElement tableNode) {
+            ExcelPackage.LicenseContext = Settings.EpplusLicenseContext;
             using (ExcelPackage package = new ExcelPackage()) {
-                CreateSheet(package, "Sheet", node);
+                CreateSheet(package, "Sheet", tableNode);
                 return package.GetAsByteArray();
             }
         }
 
-        internal void CreateSheet(ExcelPackage package, string sheetName, IElement node) {
+        internal void CreateSheet(ExcelPackage package, string sheetName, IElement tableNode) {
             ExcelWorksheet sheet = package.Workbook.Worksheets.Add(sheetName);
 
             int row = 1;
             int col = 1;
-            foreach (IElement rowNode in node.QuerySelectorAll("tr")) {
+            foreach (IElement rowNode in tableNode.QuerySelectorAll("tr")) {
 
-                List<IElement> cells = rowNode.QuerySelectorAll("th td").ToList();
-                //cells.AddRange(rowNode.Elements("th"));
+                List<IElement> cells = rowNode.QuerySelectorAll("th").ToList();
+                cells.AddRange(rowNode.QuerySelectorAll("td"));
                 foreach (IElement cellNode in cells) {
                     RenderCell(sheet, cellNode, ref row, ref col);
                 }
@@ -38,14 +39,14 @@ namespace TowerSoft.HtmlToExcel {
                 row++;
             }
 
-            if (!_hasMergedCells) {
+            if (!_hasMergedCells && sheet.Dimension != null) {
                 var table = sheet.Tables.Add(sheet.Cells[sheet.Dimension.Address], "mainTable" + sheet.Index);
                 table.TableStyle = OfficeOpenXml.Table.TableStyles.Light1;
                 table.ShowRowStripes = Settings.ShowRowStripes;
                 table.ShowFilter = Settings.ShowFilter;
             }
 
-            if (Settings.AutofitColumns) {
+            if (Settings.AutofitColumns && sheet.Dimension != null) {
                 sheet.Cells[sheet.Dimension.Address].AutoFitColumns();
             }
         }
@@ -96,6 +97,8 @@ namespace TowerSoft.HtmlToExcel {
                 } else {
                     col++;
                 }
+            } else {
+                col++;
             }
         }
     }

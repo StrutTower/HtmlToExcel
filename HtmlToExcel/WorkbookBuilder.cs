@@ -50,6 +50,9 @@ namespace TowerSoft.HtmlToExcel {
             return Package.GetAsByteArray();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose() {
             Package.Dispose();
         }

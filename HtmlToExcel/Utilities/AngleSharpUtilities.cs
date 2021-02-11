@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 namespace TowerSoft.HtmlToExcel.Utilities {
-    public class AngleSharpUtilities {
+    internal class AngleSharpUtilities {
         internal const string NoTableNodesFoundMessage = "The supplied HtmlDocument did not have a table element.";
         internal const string MultipleTableNodesFoundMessage = "The supplied HtmlDocument has more than one table element.";
 
