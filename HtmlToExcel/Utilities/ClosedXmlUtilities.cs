@@ -28,7 +28,6 @@ namespace TowerSoft.HtmlToExcel.Utilities {
         internal void CreateWorksheet(IXLWorkbook workbook, string sheetName, IElement tableNode) {
             IXLWorksheet worksheet = workbook.Worksheets.Add(sheetName);
 
-
             int row = 1;
             int col = 1;
             foreach (IElement rowNode in tableNode.QuerySelectorAll("tr")) {
@@ -55,7 +54,7 @@ namespace TowerSoft.HtmlToExcel.Utilities {
 
         private void RenderCell(IXLWorksheet worksheet, IElement cellNode, int row, ref int col) {
             IXLCell cell = worksheet.Cell(row, col);
-            cell.Value = cellNode.TextContent;
+            cell.Value = cellNode.TextContent.SafeTrim();
 
             if (cellNode.NodeName == "th") {
                 cell.Style.Font.Bold = true;
@@ -74,10 +73,10 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                     if (Uri.TryCreate(hyperlinkAttribute.Value, UriKind.Absolute, out Uri uri)) {
                         cell.Hyperlink = new XLHyperlink(uri);
                     } else {
-                        cell.Comment.AddText("Unable to parse hyperlink: " + hyperlinkAttribute.Value);
-                        cell.Comment.AddNewLine();
-                        cell.Comment.AddText("TowerSoft.HtmlToExcel");
-                            //.AddComment("Unable to parse hyperlink: " + hyperlinkAttribute.Value, "TowerSoft.HtmlToExcel");
+                        cell.Comment
+                            .SetAuthor("TowerSoft.HtmlToExcel")
+                            .AddSignature()
+                            .AddText($"Unable to parse hyperlink: {hyperlinkAttribute.Value}");
                     }
                 }
 
@@ -87,17 +86,14 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                     IAttr authorAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-comment-author");
                     if (authorAttribute != null && !string.IsNullOrWhiteSpace(authorAttribute.Value)) {
                         author = authorAttribute.Value;
+                        cell.Comment.SetAuthor(author).AddSignature();
                     }
-                    //cell.AddComment(commentAttribute.Value, author);
                     cell.Comment.AddText(commentAttribute.Value);
-                    cell.Comment.AddNewLine();
-                    cell.Comment.AddText(author);
                 }
             }
 
             if (int.TryParse(cellNode.GetAttribute("colspan"), out int colspan)) {
                 if (colspan > 1) {
-                    //worksheet.Cells[row, col, row, col + colspan - 1].Merge = true;
                     worksheet.Range(worksheet.Cell(row, col), worksheet.Cell(row, col + colspan - 1)).Merge();
                     hasMergedCells = true;
                     col += colspan;

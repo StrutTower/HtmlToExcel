@@ -1,9 +1,6 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using TowerSoft.HtmlToExcel.Utilities;
 
 namespace TowerSoft.HtmlToExcel {
@@ -61,7 +58,6 @@ namespace TowerSoft.HtmlToExcel {
         /// <returns></returns>
         private byte[] ProcessDocument(IElement htmlDoc) {
             IElement table = new AngleSharpUtilities().GetHtmlTableNode(htmlDoc);
-            //return new EPPlusUtilities(HtmlToExcelSettings).GenerateWorkbookFromHtmlNode(table);
             return new ClosedXmlUtilities(HtmlToExcelSettings).GenerateWorkbookFromHtmlNode(table);
         }
     }

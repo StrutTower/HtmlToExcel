@@ -1,6 +1,9 @@
 ﻿using AngleSharp;
-using OfficeOpenXml;
+using AngleSharp.Dom;
+using ClosedXML.Excel;
 using System;
+using System.IO;
+using TowerSoft.HtmlToExcel.Utilities;
 
 namespace TowerSoft.HtmlToExcel {
     /// <summary>
@@ -8,14 +11,14 @@ namespace TowerSoft.HtmlToExcel {
     /// </summary>
     public class WorkbookBuilder : IDisposable {
         private HtmlToExcelSettings Settings { get; }
-        private ExcelPackage Package { get; }
+        private IXLWorkbook Workbook { get; }
 
         /// <summary>
         /// Construtor using the default settings
         /// </summary>
         public WorkbookBuilder() {
             Settings = HtmlToExcelSettings.Defaults;
-            Package = new ExcelPackage();
+            Workbook = new XLWorkbook();
         }
 
         /// <summary>
@@ -24,7 +27,7 @@ namespace TowerSoft.HtmlToExcel {
         /// <param name="settings">Settings to use for this class instance</param>
         public WorkbookBuilder(HtmlToExcelSettings settings) {
             Settings = settings;
-            Package = new ExcelPackage();
+            Workbook = new XLWorkbook();
         }
 
         /// <summary>
@@ -36,9 +39,10 @@ namespace TowerSoft.HtmlToExcel {
         /// <returns></returns>
         public WorkbookBuilder AddSheet(string sheetName, string htmlString, HtmlToExcelSettings settings = null) {
             IBrowsingContext context = BrowsingContext.New(Configuration.Default);
-            var document = context.OpenAsync(req => req.Content(htmlString)).Result;
+            IElement htmlDoc = context.OpenAsync(req => req.Content(htmlString)).Result.DocumentElement;
+            IElement table = new AngleSharpUtilities().GetHtmlTableNode(htmlDoc);
 
-            new EPPlusUtilities(settings ?? Settings).CreateSheet(Package, sheetName, document.DocumentElement);
+            new ClosedXmlUtilities(settings ?? Settings).CreateWorksheet(Workbook, sheetName, table);
             return this;
         }
 
@@ -47,14 +51,16 @@ namespace TowerSoft.HtmlToExcel {
         /// </summary>
         /// <returns></returns>
         public byte[] GetAsByteArray() {
-            return Package.GetAsByteArray();
+            using MemoryStream stream = new MemoryStream();
+            Workbook.SaveAs(stream);
+            return stream.ToArray();
         }
 
         /// <summary>
-        /// 
+        /// Dispose the current Workbook
         /// </summary>
         public void Dispose() {
-            Package.Dispose();
+            Workbook.Dispose();
         }
     }
 }

@@ -7,10 +7,10 @@ namespace HtmlToExcelTests {
     [TestClass]
     public class WorkbookGeneratorTests {
         [TestMethod]
-        public void TestWorkbook() {
+        public void OutputTestWorkbook() {
             string html = File.ReadAllText("htmlTable.html");
 
-            var data = new WorkbookGenerator().FromHtmlString(html);
+            byte[] data = new WorkbookGenerator().FromHtmlString(html);
 
             File.WriteAllBytes(Path.Combine(Environment.CurrentDirectory, "test.xlsx"), data);
         }

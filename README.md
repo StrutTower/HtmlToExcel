@@ -1,6 +1,6 @@
 # TowerSoft HtmlToExcel
 
-Small Nuget package that uses AngleSharp to read a HTML table and generate an Excel file using EPPlus
+Small Nuget package that uses AngleSharp to read an HTML table and generate an Excel file using ClosedXML
 
 ### Usage
 
@@ -67,7 +67,7 @@ using (WorkbookBuilder workbookBuilder = new WorkbookBuilder(settings) {
 | colspan | Integer | Merges this cell with the following cells.
 
 
-#### ASP Core 2 Example
+#### ASP Core Example
 Add the following code to your project to render a view to a string:
 [CustomController.cs](https://gist.github.com/StrutTower/da303d31f2c930cb5a34af7a0968a0d3)
 
