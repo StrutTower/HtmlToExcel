@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<RootNamespace>TowerSoft.HtmlToExcel</RootNamespace>
 		<PackageId>TowerSoft.HtmlToExcel</PackageId>
 		<Authors>StrutTower</Authors>
@@ -9,8 +9,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Uses AngleSharp and EPPlus to automatically convert an HTML table to an Excel spreadsheet.</Description>
-		<Version>1.0.2</Version>
-		<AssemblyVersion>1.0.2.0</AssemblyVersion>
+		<Version>1.1.0</Version>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/StrutTower/HtmlToExcel</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/StrutTower/HtmlToExcel</RepositoryUrl>
@@ -23,6 +22,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="AngleSharp" Version="0.14.0" />
+		<PackageReference Include="ClosedXML" Version="0.95.4" />
 		<PackageReference Include="EPPlus" Version="5.5.3" />
 	</ItemGroup>
 

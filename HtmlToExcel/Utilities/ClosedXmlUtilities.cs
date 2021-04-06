@@ -1,62 +1,63 @@
 ﻿using AngleSharp.Dom;
-using OfficeOpenXml;
+using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text;
 
-namespace TowerSoft.HtmlToExcel {
-    internal class EPPlusUtilities {
+namespace TowerSoft.HtmlToExcel.Utilities {
+    internal class ClosedXmlUtilities {
         private HtmlToExcelSettings Settings { get; }
 
-        private bool _hasMergedCells = false;
+        private bool hasMergedCells = false;
 
-        internal EPPlusUtilities(HtmlToExcelSettings settings) {
+        internal ClosedXmlUtilities(HtmlToExcelSettings settings) {
             Settings = settings;
         }
 
         internal byte[] GenerateWorkbookFromHtmlNode(IElement tableNode) {
-            ExcelPackage.LicenseContext = Settings.EpplusLicenseContext;
-            using (ExcelPackage package = new ExcelPackage()) {
-                CreateSheet(package, "Sheet", tableNode);
-                return package.GetAsByteArray();
-            }
+            using IXLWorkbook workbook = new XLWorkbook();
+            CreateWorksheet(workbook, "Sheet1", tableNode);
+
+            using MemoryStream stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
         }
 
-        internal void CreateSheet(ExcelPackage package, string sheetName, IElement tableNode) {
-            ExcelWorksheet sheet = package.Workbook.Worksheets.Add(sheetName);
+        internal void CreateWorksheet(IXLWorkbook workbook, string sheetName, IElement tableNode) {
+            IXLWorksheet worksheet = workbook.Worksheets.Add(sheetName);
+
 
             int row = 1;
             int col = 1;
             foreach (IElement rowNode in tableNode.QuerySelectorAll("tr")) {
-
                 List<IElement> cells = rowNode.QuerySelectorAll("th").ToList();
                 cells.AddRange(rowNode.QuerySelectorAll("td"));
                 foreach (IElement cellNode in cells) {
-                    RenderCell(sheet, cellNode, ref row, ref col);
+                    RenderCell(worksheet, cellNode, row, ref col);
                 }
                 col = 1;
                 row++;
             }
 
-            if (!_hasMergedCells && sheet.Dimension != null) {
-                var table = sheet.Tables.Add(sheet.Cells[sheet.Dimension.Address], "mainTable" + sheet.Index);
-                table.TableStyle = OfficeOpenXml.Table.TableStyles.Light1;
+            if (!hasMergedCells) {
+                var table = worksheet.RangeUsed().CreateTable("mainTable" + worksheet.Name);
+                table.Theme = XLTableTheme.TableStyleLight1;
                 table.ShowRowStripes = Settings.ShowRowStripes;
-                table.ShowFilter = Settings.ShowFilter;
+                table.ShowAutoFilter = Settings.ShowFilter;
             }
 
-            if (Settings.AutofitColumns && sheet.Dimension != null) {
-                sheet.Cells[sheet.Dimension.Address].AutoFitColumns();
+            if (Settings.AutofitColumns) {
+                worksheet.ColumnsUsed().AdjustToContents();
             }
         }
 
-        private void RenderCell(ExcelWorksheet sheet, IElement cellNode, ref int row, ref int col) {
-            ExcelRange cell = sheet.Cells[row, col];
-            cell.Value = cellNode.ChildNodes.OfType<IText>().Select(m => m.Text).FirstOrDefault();
+        private void RenderCell(IXLWorksheet worksheet, IElement cellNode, int row, ref int col) {
+            IXLCell cell = worksheet.Cell(row, col);
+            cell.Value = cellNode.TextContent;
 
-
-            if (cellNode.NodeName == "th") { // Set font bold for th elements
+            if (cellNode.NodeName == "th") {
                 cell.Style.Font.Bold = true;
             }
 
@@ -71,11 +72,12 @@ namespace TowerSoft.HtmlToExcel {
                 IAttr hyperlinkAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-hyperlink");
                 if (hyperlinkAttribute != null) {
                     if (Uri.TryCreate(hyperlinkAttribute.Value, UriKind.Absolute, out Uri uri)) {
-                        cell.Hyperlink = uri;
-                        cell.Style.Font.Color.SetColor(Color.Blue);
-                        cell.Style.Font.UnderLine = true;
+                        cell.Hyperlink = new XLHyperlink(uri);
                     } else {
-                        cell.AddComment("Unable to parse hyperlink: " + hyperlinkAttribute.Value, "TowerSoft.HtmlToExcel");
+                        cell.Comment.AddText("Unable to parse hyperlink: " + hyperlinkAttribute.Value);
+                        cell.Comment.AddNewLine();
+                        cell.Comment.AddText("TowerSoft.HtmlToExcel");
+                            //.AddComment("Unable to parse hyperlink: " + hyperlinkAttribute.Value, "TowerSoft.HtmlToExcel");
                     }
                 }
 
@@ -86,14 +88,18 @@ namespace TowerSoft.HtmlToExcel {
                     if (authorAttribute != null && !string.IsNullOrWhiteSpace(authorAttribute.Value)) {
                         author = authorAttribute.Value;
                     }
-                    cell.AddComment(commentAttribute.Value, author);
+                    //cell.AddComment(commentAttribute.Value, author);
+                    cell.Comment.AddText(commentAttribute.Value);
+                    cell.Comment.AddNewLine();
+                    cell.Comment.AddText(author);
                 }
             }
 
             if (int.TryParse(cellNode.GetAttribute("colspan"), out int colspan)) {
                 if (colspan > 1) {
-                    sheet.Cells[row, col, row, col + colspan - 1].Merge = true;
-                    _hasMergedCells = true;
+                    //worksheet.Cells[row, col, row, col + colspan - 1].Merge = true;
+                    worksheet.Range(worksheet.Cell(row, col), worksheet.Cell(row, col + colspan - 1)).Merge();
+                    hasMergedCells = true;
                     col += colspan;
                 } else {
                     col++;
