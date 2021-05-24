@@ -51,9 +51,10 @@ namespace TowerSoft.HtmlToExcel {
         /// </summary>
         /// <returns></returns>
         public byte[] GetAsByteArray() {
-            using MemoryStream stream = new MemoryStream();
-            Workbook.SaveAs(stream);
-            return stream.ToArray();
+            using (MemoryStream stream = new MemoryStream()) {
+                Workbook.SaveAs(stream);
+                return stream.ToArray();
+            }
         }
 
         /// <summary>

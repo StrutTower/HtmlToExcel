@@ -17,12 +17,14 @@ namespace TowerSoft.HtmlToExcel.Utilities {
         }
 
         internal byte[] GenerateWorkbookFromHtmlNode(IElement tableNode) {
-            using IXLWorkbook workbook = new XLWorkbook();
-            CreateWorksheet(workbook, "Sheet1", tableNode);
+            using (IXLWorkbook workbook = new XLWorkbook()) {
+                CreateWorksheet(workbook, "Sheet1", tableNode);
 
-            using MemoryStream stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            return stream.ToArray();
+                using (MemoryStream stream = new MemoryStream()) {
+                    workbook.SaveAs(stream);
+                    return stream.ToArray();
+                }
+            }
         }
 
         internal void CreateWorksheet(IXLWorkbook workbook, string sheetName, IElement tableNode) {
