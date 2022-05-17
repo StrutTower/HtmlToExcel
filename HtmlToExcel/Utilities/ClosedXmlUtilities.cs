@@ -56,7 +56,8 @@ namespace TowerSoft.HtmlToExcel.Utilities {
 
         private void RenderCell(IXLWorksheet worksheet, IElement cellNode, int row, ref int col) {
             IXLCell cell = worksheet.Cell(row, col);
-            cell.Value = cellNode.TextContent.SafeTrim();
+            bool valueSet = false;
+            string value = cellNode.TextContent.SafeTrim();
 
             if (cellNode.NodeName == "th") {
                 cell.Style.Font.Bold = true;
@@ -92,6 +93,60 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                     }
                     cell.Comment.AddText(commentAttribute.Value);
                 }
+
+                IAttr dataTypeAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-type");
+                IAttr dataFormatAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-format");
+                if (dataTypeAttribute != null && !string.IsNullOrWhiteSpace(dataTypeAttribute.Value)) {
+                    if (Enum.TryParse(dataTypeAttribute.Value, true, out XLDataType dataType)) {
+                        cell.SetDataType(dataType);
+                    }
+                    switch (dataTypeAttribute.Value.ToLower()) {
+                        case "text":
+                        case "string":
+                            cell.SetValue(value);
+                            valueSet = true;
+                            break;
+                        case "number":
+                        case "int":
+                        case "double":
+                        case "float":
+                        case "decimal":
+                            if (decimal.TryParse(value, out decimal number)) {
+                                if (dataFormatAttribute != null && !string.IsNullOrWhiteSpace(dataFormatAttribute.Value))
+                                    cell.Style.NumberFormat.Format = dataFormatAttribute.Value;
+                                cell.SetValue(number);
+                                valueSet = true;
+                            }
+                            break;
+                        case "bool":
+                        case "boolean":
+                            if (bool.TryParse(value, out bool boolValue)) {
+                                cell.SetValue(boolValue);
+                                valueSet = true;
+                            }
+                            break;
+                        case "date":
+                        case "datetime":
+                            if (DateTime.TryParse(value, out DateTime dateTime)) {
+                                if (dataFormatAttribute != null && !string.IsNullOrWhiteSpace(dataFormatAttribute.Value))
+                                    cell.Style.DateFormat.Format = dataFormatAttribute.Value;
+                                cell.SetValue(dateTime);
+                                valueSet = true;
+                            }
+                            break;
+                        case "time":
+                        case "timespan":
+                            if (TimeSpan.TryParse(value, out TimeSpan timeSpan)) {
+                                cell.SetValue(timeSpan);
+                                valueSet = true;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            if (!valueSet) {
+                cell.SetValue(value);
             }
 
             if (int.TryParse(cellNode.GetAttribute("colspan"), out int colspan)) {

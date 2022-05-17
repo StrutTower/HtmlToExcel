@@ -62,6 +62,8 @@ using (WorkbookBuilder workbookBuilder = new WorkbookBuilder(settings) {
 |----------------|--------------------|
 | data-excel-hyperlink | URI | Creates a hyperlink on the cell. Must be a parsable absolute URI.
 | data-excel-bold | Boolean | Sets if the cell style will be set to bold.
+| data-type | String | Sets the data type for the cell. Valid options are: Text, Number, Boolean, DateTime, TimeSpan
+| data-format | String | Sets the format. Only works with data-type="Number" and data-type="DateTime"
 | data-excel-comment | String | Adds a comment to the cell
 | data-excel-comment-author | String | Sets the author for the comment
 | colspan | Integer | Merges this cell with the following cells.
