@@ -74,9 +74,9 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                 IAttr hyperlinkAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-hyperlink");
                 if (hyperlinkAttribute != null) {
                     if (Uri.TryCreate(hyperlinkAttribute.Value, UriKind.Absolute, out Uri uri)) {
-                        cell.Hyperlink = new XLHyperlink(uri);
+                        cell.SetHyperlink(new XLHyperlink(uri));
                     } else {
-                        cell.Comment
+                        cell.CreateComment()
                             .SetAuthor("TowerSoft.HtmlToExcel")
                             .AddSignature()
                             .AddText($"Unable to parse hyperlink: {hyperlinkAttribute.Value}");
@@ -89,9 +89,9 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                     IAttr authorAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-comment-author");
                     if (authorAttribute != null && !string.IsNullOrWhiteSpace(authorAttribute.Value)) {
                         author = authorAttribute.Value;
-                        cell.Comment.SetAuthor(author).AddSignature();
+                        cell.CreateComment().SetAuthor(author).AddSignature();
                     }
-                    cell.Comment.AddText(commentAttribute.Value);
+                    cell.CreateComment().AddText(commentAttribute.Value);
                 }
 
                 IAttr dataTypeAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-type");
