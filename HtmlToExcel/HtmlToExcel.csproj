@@ -9,26 +9,37 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Uses AngleSharp and ClosedXML to automatically convert an HTML table to an Excel spreadsheet.</Description>
-		<Version>2.1.0</Version>
+		<Version>2.2.0</Version>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/StrutTower/HtmlToExcel</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/StrutTower/HtmlToExcel</RepositoryUrl>
 		<Product>TowerSoft HtmlToExcel</Product>
+		<PackageIcon>towersoft-logo-T_128x.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
-		<PackageReference Include="AngleSharp" Version="0.14.0" />
-		<PackageReference Include="ClosedXML" Version="0.95.4" />
+		<PackageReference Include="AngleSharp" Version="0.17.1" />
+		<PackageReference Include="ClosedXML" Version="0.97.0" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\..\TowerSoft.Utilities\TowerSoft.Utilities\towersoft-logo-T_128x.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="..\license.txt">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 
