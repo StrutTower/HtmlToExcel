@@ -9,7 +9,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Uses AngleSharp and ClosedXML to automatically convert an HTML table to an Excel spreadsheet.</Description>
-		<Version>2.2.0</Version>
+		<Version>2.2.1</Version>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/StrutTower/HtmlToExcel</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/StrutTower/HtmlToExcel</RepositoryUrl>
@@ -24,12 +24,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AngleSharp" Version="0.17.1" />
-		<PackageReference Include="ClosedXML" Version="0.97.0" />
+		<PackageReference Include="AngleSharp" Version="1.0.7" />
+		<PackageReference Include="ClosedXML" Version="0.102.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\TowerSoft.Utilities\TowerSoft.Utilities\towersoft-logo-T_128x.png">
+		<None Include="towersoft-logo-T_128x.png">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
 		</None>

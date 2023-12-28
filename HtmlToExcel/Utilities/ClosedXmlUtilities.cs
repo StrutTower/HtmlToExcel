@@ -97,9 +97,6 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                 IAttr dataTypeAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-type");
                 IAttr dataFormatAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-format");
                 if (dataTypeAttribute != null && !string.IsNullOrWhiteSpace(dataTypeAttribute.Value)) {
-                    if (Enum.TryParse(dataTypeAttribute.Value, true, out XLDataType dataType)) {
-                        cell.SetDataType(dataType);
-                    }
                     switch (dataTypeAttribute.Value.ToLower()) {
                         case "text":
                         case "string":
