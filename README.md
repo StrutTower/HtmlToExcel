@@ -66,7 +66,9 @@ using (WorkbookBuilder workbookBuilder = new WorkbookBuilder(settings) {
 | data-format | String | Sets the cell format. Only works with data-type="Number" and data-type="DateTime" |
 | data-excel-comment | String | Adds a comment to the cell |
 | data-excel-comment-author | String | Sets the author for the comment |
+| horizontal-alignment | String | Sets the cell horizontal alignment. Valid options are: Center, CenterContinuous, Distributed, Fill, General, Justify, Left, Right |
 | colspan | Integer | Merges this cell with the following cells |
+| font-size | Integer |Sets the cell font size |
 
 
 #### ASP Core Example
