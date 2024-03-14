@@ -70,6 +70,14 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                         cell.Style.Font.Bold = isBold;
                     }
                 }
+                
+                IAttr horizontalAlignmentAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "horizontal-alignment");
+                if (horizontalAlignmentAttribute != null) {
+                    if (Enum.TryParse(horizontalAlignmentAttribute.Value, true, out XLAlignmentHorizontalValues horizontalAlignment))
+                    {
+                        cell.Style.Alignment.Horizontal = horizontalAlignment;
+                    }
+                }
 
                 IAttr hyperlinkAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-excel-hyperlink");
                 if (hyperlinkAttribute != null) {
@@ -156,6 +164,13 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                 }
             } else {
                 col++;
+            }
+            
+            if (int.TryParse(cellNode.GetAttribute("font-size"), out int fontSize)) {
+                if (fontSize > 0)
+                {
+                    cell.Style.Font.FontSize = fontSize;
+                }
             }
         }
     }
