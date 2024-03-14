@@ -2,9 +2,10 @@
 using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 
 namespace TowerSoft.HtmlToExcel.Utilities {
     internal class ClosedXmlUtilities {
@@ -70,11 +71,10 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                         cell.Style.Font.Bold = isBold;
                     }
                 }
-                
-                IAttr horizontalAlignmentAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "horizontal-alignment");
+
+                IAttr horizontalAlignmentAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-horizontal-alignment");
                 if (horizontalAlignmentAttribute != null) {
-                    if (Enum.TryParse(horizontalAlignmentAttribute.Value, true, out XLAlignmentHorizontalValues horizontalAlignment))
-                    {
+                    if (Enum.TryParse(horizontalAlignmentAttribute.Value, true, out XLAlignmentHorizontalValues horizontalAlignment)) {
                         cell.Style.Alignment.Horizontal = horizontalAlignment;
                     }
                 }
@@ -165,9 +165,27 @@ namespace TowerSoft.HtmlToExcel.Utilities {
             } else {
                 col++;
             }
-            
-            if (int.TryParse(cellNode.GetAttribute("font-size"), out int fontSize) && fontSize > 0) {
+
+            if (int.TryParse(cellNode.GetAttribute("data-font-size"), out int fontSize) && fontSize > 0) {
                 cell.Style.Font.FontSize = fontSize;
+            }
+
+            if (cellNode.HasAttribute("data-font-color")) {
+                string color = cellNode.GetAttribute("data-font-color");
+
+                Regex hexRegex = new Regex(@"^#([a-f0-9]{6}|[a-f0-9]{3})$", RegexOptions.IgnoreCase);
+                if (hexRegex.IsMatch(color)) {
+                    cell.Style.Font.SetFontColor(XLColor.FromHtml(color));
+                }
+            }
+
+            if (cellNode.HasAttribute("data-background-color")) {
+                string color = cellNode.GetAttribute("data-background-color");
+
+                Regex hexRegex = new Regex(@"^#([a-f0-9]{6}|[a-f0-9]{3})$", RegexOptions.IgnoreCase);
+                if (hexRegex.IsMatch(color)) {
+                    cell.Style.Fill.SetBackgroundColor(XLColor.FromHtml(color));
+                }
             }
         }
     }
