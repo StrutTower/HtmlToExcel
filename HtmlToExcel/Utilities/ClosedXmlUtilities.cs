@@ -166,11 +166,8 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                 col++;
             }
             
-            if (int.TryParse(cellNode.GetAttribute("font-size"), out int fontSize)) {
-                if (fontSize > 0)
-                {
-                    cell.Style.Font.FontSize = fontSize;
-                }
+            if (int.TryParse(cellNode.GetAttribute("font-size"), out int fontSize) && fontSize > 0) {
+                cell.Style.Font.FontSize = fontSize;
             }
         }
     }
