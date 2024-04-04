@@ -57,7 +57,7 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                 ? XLPageOrientation.Portrait
                 : XLPageOrientation.Landscape;
 
-            worksheet.ShowGridLines = Settings.ShowGridLines;
+            worksheet.PageSetup.ShowGridlines = Settings.ShowGridLines;
         }
 
         private void RenderCell(IXLWorksheet worksheet, IElement cellNode, int row, ref int col) {
