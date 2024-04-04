@@ -2,7 +2,6 @@
 using ClosedXML.Excel;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -53,6 +52,12 @@ namespace TowerSoft.HtmlToExcel.Utilities {
             if (Settings.AutofitColumns) {
                 worksheet.ColumnsUsed().AdjustToContents();
             }
+
+            worksheet.PageSetup.PageOrientation = Settings.PrintingPageOrientationPortrait
+                ? XLPageOrientation.Portrait
+                : XLPageOrientation.Landscape;
+
+            worksheet.ShowGridLines = Settings.ShowGridLines;
         }
 
         private void RenderCell(IXLWorksheet worksheet, IElement cellNode, int row, ref int col) {
@@ -76,6 +81,14 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                 if (horizontalAlignmentAttribute != null) {
                     if (Enum.TryParse(horizontalAlignmentAttribute.Value, true, out XLAlignmentHorizontalValues horizontalAlignment)) {
                         cell.Style.Alignment.Horizontal = horizontalAlignment;
+                    }
+                }
+                
+                IAttr wrapAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-wrap");
+                if (wrapAttribute != null) {
+                    if (bool.TryParse(wrapAttribute.Value, out bool isWrapped))
+                    {
+                        cell.Style.Alignment.WrapText = isWrapped;
                     }
                 }
 

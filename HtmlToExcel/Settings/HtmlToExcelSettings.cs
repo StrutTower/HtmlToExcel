@@ -17,6 +17,16 @@
         /// Toggles if the table should show filters in the header. Does NOT work if the sheet contains ANY merged cells. Default = true
         /// </summary>
         public bool ShowFilter { get; set; }
+        
+        /// <summary>
+        /// Toggles if the orientation of the printed page is Portrait, else Landscape. Default = true
+        /// </summary>
+        public bool PrintingPageOrientationPortrait { get; set; }
+        
+        /// <summary>
+        /// Toggles if the table should show the grid lines. Default = false
+        /// </summary>
+        public bool ShowGridLines { get; set; }
 
         /// <summary>
         /// Get the default settings
@@ -26,7 +36,8 @@
                 return new HtmlToExcelSettings {
                     AutofitColumns = true,
                     ShowRowStripes = true,
-                    ShowFilter = true
+                    ShowFilter = true,
+                    PrintingPageOrientationPortrait = true
                 };
             }
         }
