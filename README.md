@@ -30,11 +30,13 @@ using (WorkbookBuilder workbookBuilder = new WorkbookBuilder()) {
 Some settings do not work if there are any colspans in the table.
 This is because Excel does not allow tables with merged cells and those settings only work in tables.
 
-| Setting Name | Default Value | Description |
-|--------------|---------------|-------------|
-| AutofitColumns | true | Enables/disables fitting the width of the columns to fit the contents. |
-| ShowFilter | true | Enables/disables showing table filters. Does not work with the table has any colspans. |
-| ShowRowStripes | true | Enables/disables row stripes. Does not work with the table has any colspans. |
+| Setting Name | Default Value | Description                                                                            |
+|--------------|---------------|----------------------------------------------------------------------------------------|
+| AutofitColumns | true          | Enables/disables fitting the width of the columns to fit the contents.                 |
+| ShowFilter | true          | Enables/disables showing table filters. Does not work with the table has any colspans. |
+| ShowRowStripes | true          | Enables/disables row stripes. Does not work with the table has any colspans.           |
+| PrintingPageOrientationPortrait | true          | Sets the printing page default orientation to Portrait (Landscape if false)            |
+| ShowGridLines | false         | Enables/disables grid lines                                                            |
 
 You can change the settings using `HtmlToExcellSettings`
 and passing it in the constructor of `htmlToEzxel`
@@ -58,19 +60,20 @@ using (WorkbookBuilder workbookBuilder = new WorkbookBuilder(settings) {
 #### Individual Cell Options
 
 
-| Attribute Name | Expected Data Type | Comments |
-|----------------|--------------------|----------|
-| data-excel-hyperlink | URI | Creates a hyperlink on the cell. Must be a parsable absolute URI. |
-| data-excel-bold | Boolean | Sets if the cell style will be set to bold. |
-| data-type | String | Sets the data type for the cell. Valid options are: Text, Number, Boolean, DateTime, TimeSpan |
-| data-format | String | Sets the cell format. Only works with data-type="Number" and data-type="DateTime" |
-| data-excel-comment | String | Adds a comment to the cell |
-| data-excel-comment-author | String | Sets the author for the comment |
+| Attribute Name | Expected Data Type | Comments                                                                                                                          |
+|----------------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| data-excel-hyperlink | URI | Creates a hyperlink on the cell. Must be a parsable absolute URI.                                                                 |
+| data-excel-bold | Boolean | Sets if the cell style will be set to bold.                                                                                       |
+| data-wrap | Boolean | Sets if the cell text is wrapped.                                                                                                 |
+| data-type | String | Sets the data type for the cell. Valid options are: Text, Number, Boolean, DateTime, TimeSpan                                     |
+| data-format | String | Sets the cell format. Only works with data-type="Number" and data-type="DateTime"                                                 |
+| data-excel-comment | String | Adds a comment to the cell                                                                                                        |
+| data-excel-comment-author | String | Sets the author for the comment                                                                                                   |
 | data-horizontal-alignment | String | Sets the cell horizontal alignment. Valid options are: Center, CenterContinuous, Distributed, Fill, General, Justify, Left, Right |
-| colspan | Integer | Merges this cell with the following cells |
-| data-font-size | Integer | Sets the cell font size |
-| data-font-color | String(HexColor) | Sets the font color of the cell. Must be a valid hex color code, Example: #006688 |
-| data-background-color | String(HexColor) | Sets the fill/background color of the cell. Must be a valid hex color code, Example: #006688 |
+| colspan | Integer | Merges this cell with the following cells                                                                                         |
+| data-font-size | Integer | Sets the cell font size                                                                                                           |
+| data-font-color | String(HexColor) | Sets the font color of the cell. Must be a valid hex color code, Example: #006688                                                 |
+| data-background-color | String(HexColor) | Sets the fill/background color of the cell. Must be a valid hex color code, Example: #006688                                      |
 
 
 #### ASP Core Example
