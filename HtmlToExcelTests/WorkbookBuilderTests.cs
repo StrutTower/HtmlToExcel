@@ -12,6 +12,15 @@ namespace HtmlToExcelTests {
 
             WorkbookBuilder workbookBuilder = new();
             workbookBuilder.AddSheet("test", html);
+            workbookBuilder.AddSheet("test", html);
+            workbookBuilder.AddSheet("test", html);
+            workbookBuilder.AddSheet("test2 ", html);
+            workbookBuilder.AddSheet("test2", html);
+            workbookBuilder.AddSheet("Loremipsumdolorsitam_consecteturadipiscin", html);
+            workbookBuilder.AddSheet("Loremipsumdolorsitam_consecteturadipiscin", html);
+
+            workbookBuilder.AddSheet("illegal-characters-/\\*?[]", html);
+            workbookBuilder.AddSheet("/\\*?[]", html);
 
             workbookBuilder.AddSheet("sheet2", html);
 

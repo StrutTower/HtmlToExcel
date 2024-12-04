@@ -28,6 +28,28 @@ namespace TowerSoft.HtmlToExcel.Utilities {
         }
 
         internal void CreateWorksheet(IXLWorkbook workbook, string sheetName, IElement tableNode) {
+            sheetName = sheetName.SafeTrim();
+            sheetName = RemoveIllegalCharacters(sheetName);
+
+            if (string.IsNullOrWhiteSpace(sheetName)) {
+                sheetName = "sheet";
+            }
+
+            if (sheetName.Length > 31)
+                sheetName = sheetName.Substring(0, 31);
+
+            int counter = 1;
+            while (workbook.Worksheets.Any(x => x.Name == sheetName)) {
+                if (sheetName.Length > 27) {
+                    sheetName = sheetName.Substring(0, 27) + "(" + counter + ")";
+                } else if (counter == 1) {
+                    sheetName = sheetName + "(" + counter + ")";
+                } else {
+                    sheetName = sheetName.Substring(0, sheetName.Length - 3) + "(" + counter + ")";
+                }
+                counter++;
+            }
+
             IXLWorksheet worksheet = workbook.Worksheets.Add(sheetName);
 
             int row = 1;
@@ -83,11 +105,10 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                         cell.Style.Alignment.Horizontal = horizontalAlignment;
                     }
                 }
-                
+
                 IAttr wrapAttribute = cellNode.Attributes.SingleOrDefault(x => x.Name == "data-wrap");
                 if (wrapAttribute != null) {
-                    if (bool.TryParse(wrapAttribute.Value, out bool isWrapped))
-                    {
+                    if (bool.TryParse(wrapAttribute.Value, out bool isWrapped)) {
                         cell.Style.Alignment.WrapText = isWrapped;
                     }
                 }
@@ -200,6 +221,10 @@ namespace TowerSoft.HtmlToExcel.Utilities {
                     cell.Style.Fill.SetBackgroundColor(XLColor.FromHtml(color));
                 }
             }
+        }
+
+        private string RemoveIllegalCharacters(string sheetName) {
+            return sheetName.Replace("/", "").Replace("\\", "").Replace("*", "").Replace("?", "").Replace("[", "").Replace("]", "");
         }
     }
 }
