@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<RootNamespace>TowerSoft.HtmlToExcel</RootNamespace>
 		<PackageId>TowerSoft.HtmlToExcel</PackageId>
 		<Authors>StrutTower</Authors>
@@ -9,7 +9,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Uses AngleSharp and ClosedXML to automatically convert an HTML table to an Excel spreadsheet.</Description>
-		<Version>3.0.0</Version>
+		<Version>3.1.0</Version>
 		<PackageLicenseFile>license.txt</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/StrutTower/HtmlToExcel</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/StrutTower/HtmlToExcel</RepositoryUrl>
@@ -24,8 +24,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AngleSharp" Version="1.1.2" />
-		<PackageReference Include="ClosedXML" Version="0.104.2" />
+		<PackageReference Include="AngleSharp" Version="1.7.2" />
+		<PackageReference Include="ClosedXML" Version="0.105.1" />
 	</ItemGroup>
 
 	<ItemGroup>
